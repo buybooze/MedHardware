@@ -8,5 +8,9 @@
 }
 
 .values-wrapper {
-    
+    height: 200px;
+    margin: 20px;
+    background-color: aquamarine;
+    text-overflow: clip;
+    overflow: hidden;
 }

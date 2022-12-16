@@ -6,22 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<link rel="stylesheet" href="style.css">
 <body>
     <div class="content">
         <div class="filters">
-            <p>Service: </p>
+            <!-- <p>Service: </p>
             <input id="service-input" type="text"/>
             <p>Characteristic: </p>
             <input id="characteristic-input" type="text"/>
             <br>
+            <br> -->
+            <button class="request-device oxy">Get oxymeter</button>
+            <button class="stop-notifications oxy">Stop oxymeter</button>
+        </div>
+        <h3>Oxymeter values:</h3>
+        <div class="values-wrapper oxy"></div>
+
+        <div class="filters">
+            <!-- <p>Service: </p>
+            <input id="service-input" type="text"/>
+            <p>Characteristic: </p>
+            <input id="characteristic-input" type="text"/>
             <br>
-            <button class="request-device">Get devices</button>
-            <button class="stop-notifications">Stop</button>
+            <br> -->
+            <button class="request-device stetho">Get stethoscope</button>
+            <button class="stop-notifications stetho">Stop stethoscope</button>
         </div>
-        <h3>Values:</h3>
-        <div class="values-wrapper">
-            
-        </div>
+        <h3>Stethoscope values:</h3>
+        <div class="values-wrapper stetho"></div>
     </div>
 </body>
 <script src="script.js"></script>
