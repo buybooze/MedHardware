@@ -37,11 +37,17 @@ const valuesWrapperOxy = document.querySelector(".values-wrapper.oxy");
 
 const valuesWrapperStetho = document.querySelector(".values-wrapper.stetho");
 
+const valuesWrapperRandom = document.querySelector(".values-wrapper.random");
+
 
 
 const stopButtonOxy = document.querySelector(".stop-notifications.oxy");
 
 const stopButtonStetho = document.querySelector(".stop-notifications.stetho");
+
+const randomValuesInput = document.querySelector("#random-values-input");
+
+const convertValuesButton = document.querySelector(".convert-values");
 
 
 const handleNotificationsOxy = (e) => {
@@ -49,26 +55,14 @@ const handleNotificationsOxy = (e) => {
   let a = [];
   let b = [];
   let c = [];
-  let d = [];
+
   if (value.byteLength == 10) {
     for (let i = 0; i < value.byteLength; i++) {
       a.push('0x' + ('00' + value.getUint8(i).toString(16)));
-      // c.push((int) (value.getUint8(i)));
-      // .slice(-2)
-    }
-    for (let i = 0; i< value.byteLength; i++) {
-      b.push(value.getUint8(i).toString())
-    }
-    // let int8Array = new Int8Array(value, 0, value.byteLength);
-    // for (let i = 0; i< int8Array.byteLength; i++) {
-    //   c.push(int8Array[i])
-    // }
-    // console.log('> ' + a.join(' '));
-    // let view = new DataView(value);
-    for (let i=0; i < value.byteLength; i++) {
+      b.push(value.getUint8(i).toString());
       c.push(value.getInt8(i));
     }
-    console.log(value);
+
     valuesWrapperOxy.innerHTML = `
       <div class="value">Hex values: ${a.join(' ')}</div>
       <div class="value">UInt values: ${b.join(' ')}</div>
@@ -86,26 +80,13 @@ const handleNotificationsStetho = (e) => {
   let a = [];
   let b = [];
   let c = [];
-  let d = [];
   
   for (let i = 0; i < value.byteLength; i++) {
     a.push('0x' + ('00' + value.getUint8(i).toString(16)));
-    // c.push((int) (value.getUint8(i)));
-    // .slice(-2)
-  }
-  for (let i = 0; i< value.byteLength; i++) {
-    b.push(value.getUint8(i).toString())
-  }
-  // let int8Array = new Int8Array(value, 0, value.byteLength);
-  // for (let i = 0; i< int8Array.byteLength; i++) {
-  //   c.push(int8Array[i])
-  // }
-  // console.log('> ' + a.join(' '));
-  // let view = new DataView(value);
-  for (let i=0; i < value.byteLength; i++) {
+    b.push(value.getUint8(i).toString());
     c.push(value.getInt8(i));
   }
-  console.log(value);
+
   valuesWrapperStetho.innerHTML = `
     <div class="value">Hex values: ${a.join(' ')}</div>
     <div class="value">UInt values: ${b.join(' ')}</div>
@@ -134,6 +115,33 @@ stopButtonStetho.addEventListener('click', () => {
     })
   }
 });
+
+
+convertValuesButton.addEventListener('click', () => {
+  let values = randomValuesInput.value.toString().split(" ");
+  let ab = [];
+  for (let i = 0; i < values.length; i++) {
+    ab.push(parseInt(values[i], 16))
+  }
+  let intArray = new Uint8Array(ab);
+  let view = new DataView(intArray.buffer);
+  let a = [];
+  let b = [];
+  let c = [];
+  
+  for (let i = 0; i < view.byteLength; i++) {
+    a.push('0x' + ('00' + view.getUint8(i).toString(16)));
+    b.push(view.getUint8(i).toString());
+    c.push(view.getInt8(i));
+  }
+
+  valuesWrapperRandom.innerHTML = `
+    <div class="value">Hex values: ${a.join(' ')}</div>
+    <div class="value">UInt values: ${b.join(' ')}</div>
+    <div class="value">Int values: ${c.join(' ')}</div>
+    <div class="value">Array length: ${view.byteLength}</div>
+  `
+})
 
 
 
