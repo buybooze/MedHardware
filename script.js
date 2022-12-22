@@ -118,7 +118,7 @@ stopButtonStetho.addEventListener('click', () => {
 
 
 convertValuesButton.addEventListener('click', () => {
-  let values = randomValuesInput.value.toString().split(" ");
+  let values = randomValuesInput.value.toString().replaceAll('-',' ').split(" ");
   let ab = [];
   for (let i = 0; i < values.length; i++) {
     ab.push(parseInt(values[i], 16))
