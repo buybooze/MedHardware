@@ -113,12 +113,14 @@ const handleNotificationsGlucose = (e) => {
     c.push(value.getInt8(i));
   }
 
-  valuesWrapperGlucose.innerHTML = `
+  if (a.length == 15) {
+    valuesWrapperGlucose.innerHTML = `
     <div class="value">Hex values: ${a.join(' ')}</div>
     <div class="value">UInt values: ${b.join(' ')}</div>
     <div class="value">Int values: ${c.join(' ')}</div>
     <div class="value">Array length: ${value.byteLength}</div>
   `
+  }
 }
 
 stopButtonOxy.addEventListener('click', () => {
