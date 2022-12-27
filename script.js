@@ -8,6 +8,8 @@ let pulseOxy;
 
 let stetho;
 
+let glucose;
+
 
 // button.addEventListener('click', (e) => {
 //     navigator.bluetooth.requestDevice({
@@ -37,6 +39,8 @@ const valuesWrapperOxy = document.querySelector(".values-wrapper.oxy");
 
 const valuesWrapperStetho = document.querySelector(".values-wrapper.stetho");
 
+const valuesWrapperGlucose = document.querySelector(".values-wrapper.glucose");
+
 const valuesWrapperRandom = document.querySelector(".values-wrapper.random");
 
 
@@ -44,6 +48,8 @@ const valuesWrapperRandom = document.querySelector(".values-wrapper.random");
 const stopButtonOxy = document.querySelector(".stop-notifications.oxy");
 
 const stopButtonStetho = document.querySelector(".stop-notifications.stetho");
+
+const stopButtonGlucose = document.querySelector(".stop-notifications.glucose");
 
 const randomValuesInput = document.querySelector("#random-values-input");
 
@@ -93,7 +99,26 @@ const handleNotificationsStetho = (e) => {
     <div class="value">Int values: ${c.join(' ')}</div>
     <div class="value">Array length: ${value.byteLength}</div>
   `
+}
+
+const handleNotificationsGlucose = (e) => {
+  let value = e.target.value;
+  let a = [];
+  let b = [];
+  let c = [];
   
+  for (let i = 0; i < value.byteLength; i++) {
+    a.push('0x' + ('00' + value.getUint8(i).toString(16)));
+    b.push(value.getUint8(i).toString());
+    c.push(value.getInt8(i));
+  }
+
+  valuesWrapperGlucose.innerHTML = `
+    <div class="value">Hex values: ${a.join(' ')}</div>
+    <div class="value">UInt values: ${b.join(' ')}</div>
+    <div class="value">Int values: ${c.join(' ')}</div>
+    <div class="value">Array length: ${value.byteLength}</div>
+  `
 }
 
 stopButtonOxy.addEventListener('click', () => {
@@ -116,6 +141,15 @@ stopButtonStetho.addEventListener('click', () => {
   }
 });
 
+stopButtonGlucose.addEventListener('click', () => {
+  if (glucose) {
+    glucose.stopNotifications()
+    .then(() => {
+      console.log('Notifications stopped.');
+      glucose.removeEventListener('characteristicValueChanged', handleNotificationsGlucose)
+    })
+  }
+});
 
 convertValuesButton.addEventListener('click', () => {
   let values = randomValuesInput.value.toString().replaceAll('-',' ').split(" ");
@@ -148,6 +182,8 @@ convertValuesButton.addEventListener('click', () => {
 const requestButtonOxy = document.querySelector(".request-device.oxy");
 
 const requestButtonStetho = document.querySelector(".request-device.stetho");
+
+const requestButtonGlucose = document.querySelector(".request-device.glucose");
 
 
 requestButtonOxy.addEventListener('click', () => {
@@ -238,6 +274,62 @@ requestButtonStetho.addEventListener('click', () => {
       return char.startNotifications().then(() => {
         console.log('Stetho notifications started');
         stetho.addEventListener('characteristicvaluechanged', handleNotificationsStetho)
+      })
+    })
+    // .then(char => {
+    //   console.log('char: ');
+    //   console.log(char);
+    //   return char.readValue()
+    // })
+    // .then(value => {
+    //   console.log(value);
+    // })
+    // .then(characteristics => {
+    //   console.log('characteristics: ');
+    //   console.log(characteristics);
+    //   characteristics.forEach(c => {
+    //     c.readValue()
+    //     .then(value => console.log(value))
+    //   })
+    // })
+    .catch(error => {
+      console.error('Argh! ' + error);
+    });
+});
+
+requestButtonGlucose.addEventListener('click', () => {
+  navigator.bluetooth.requestDevice( 
+      {
+        // acceptAllDevices: true
+        filters: [
+          // {services: [0x0001, 0xFFB0]} 
+          {name: 'Contour7804H6373522'}
+        ],
+        optionalServices: [0xFFF0, 0xFFB0, 0x1800, 0x1801, 0xFFE0, 0x0003, 0x180F, 0x180A, "00001808-0000-1000-8000-00805f9b34fb"]
+      }
+    )
+    .then(device => {
+      console.log('device: ');
+      console.log(device);
+      return device.gatt.connect();
+    })
+    .then(server => {
+      console.log('server: ');
+      console.log(server);
+      return server.getPrimaryService("00001808-0000-1000-8000-00805f9b34fb");
+    })
+    .then(service => {
+      console.log('service: ');
+      console.log(service);
+      return service.getCharacteristic("00002a18-0000-1000-8000-00805f9b34fb");
+    })
+    .then(char => {
+      console.log('char: ');
+      console.log(char);
+      glucose = char;
+      return char.startNotifications().then(() => {
+        console.log('Glucose notifications started');
+        glucose.addEventListener('characteristicvaluechanged', handleNotificationsGlucose)
       })
     })
     // .then(char => {
