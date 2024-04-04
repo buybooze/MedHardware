@@ -5,10 +5,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
 </head>
 <link rel="stylesheet" href="style.css">
 <body>
     <div class="content">
+	    <div class="filters">
+            <!-- <p>Service: </p>
+            <input id="service-input" type="text"/>
+            <p>Characteristic: </p>
+            <input id="characteristic-input" type="text"/>
+            <br>
+            <br> -->
+            <button class="request-device temperature">Get temperature</button>
+            <button class="stop-notifications temperature">Stop temperature</button>
+        </div>
+        <h3>Temperature values:</h3>
+        <div class="values-wrapper temperature"></div>
+	
         <div class="filters">
             <!-- <p>Service: </p>
             <input id="service-input" type="text"/>
@@ -47,6 +61,20 @@
         </div>
         <h3>Glucometer values:</h3>
         <div class="values-wrapper glucose"></div>
+		
+        <div class="filters">
+            <!-- <p>Service: </p>
+            <input id="service-input" type="text"/>
+            <p>Characteristic: </p>
+            <input id="characteristic-input" type="text"/>
+            <br>
+            <br> -->
+            <button class="request-device ecg">Get ECG</button>
+            <button class="stop-notifications ecg">Stop ECG</button>
+        </div>
+        <h3>ECG values:</h3>
+		<svg width="360" height="400"></svg>
+        <!--<div class="values-wrapper ecg"></div> -->
 
         <div class="filters">
             <h3>Source values: </h3>
