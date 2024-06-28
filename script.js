@@ -10,6 +10,7 @@ let stetho;
 
 let glucose;
 
+let stethoArr = [];
 
 // button.addEventListener('click', (e) => {
 //     navigator.bluetooth.requestDevice({
@@ -82,16 +83,18 @@ const handleNotificationsOxy = (e) => {
 }
 
 const handleNotificationsStetho = (e) => {
-  let value = e.target.value;
-  let a = [];
-  let b = [];
-  let c = [];
-  
-  for (let i = 0; i < value.byteLength; i++) {
-    a.push('0x' + ('00' + value.getUint8(i).toString(16)));
-    b.push(value.getUint8(i).toString());
-    c.push(value.getInt8(i));
-  }
+let value = e.target.value;
+let a = [];
+let b = [];
+let c = [];
+
+for (let i = 0; i < value.byteLength; i++) {
+  a.push('0x' + ('00' + value.getUint8(i).toString(16)));
+  b.push(value.getUint8(i).toString());
+  c.push(value.getInt8(i));
+}
+
+stethoArr.push(c.slice(38, value.byteLength));
 
   valuesWrapperStetho.innerHTML = `
     <div class="value">Hex values: ${a.join(' ')}</div>
@@ -134,13 +137,44 @@ stopButtonOxy.addEventListener('click', () => {
 });
 
 stopButtonStetho.addEventListener('click', () => {
-  if (stetho) {
-    stetho.stopNotifications()
-    .then(() => {
-      console.log('Notifications stopped.');
-      stetho.removeEventListener('characteristicValueChanged', handleNotificationsStetho)
-    })
-  }
+if (stetho) {
+  stetho.stopNotifications()
+  .then(() => {
+    console.log('Notifications stopped.');
+    stetho.removeEventListener('characteristicValueChanged', handleNotificationsStetho)
+	
+		var downloadBlob, downloadURL;
+
+		downloadBlob = function(data, fileName, mimeType) {
+		  var blob, url;
+		  blob = new Blob([data], {
+			type: mimeType
+		  });
+		  url = window.URL.createObjectURL(blob);
+		  downloadURL(url, fileName);
+		  setTimeout(function() {
+			return window.URL.revokeObjectURL(url);
+		  }, 1000);
+		};
+
+		downloadURL = function(data, fileName) {
+		  var a;
+		  a = document.createElement('a');
+		  a.href = data;
+		  a.download = fileName;
+		  document.body.appendChild(a);
+		  a.style = 'display: none';
+		  a.click();
+		  a.remove();
+		};
+
+    let flatStethoArr = new Uint8Array(stethoArr.flat());
+		
+		let myBinaryBlob = new Blob([flatStethoArr], {type: 'application/octet-stream'});
+		
+		downloadBlob(myBinaryBlob, 'some-file.pcm', 'application/octet-stream');
+  })
+}
 });
 
 stopButtonGlucose.addEventListener('click', () => {
